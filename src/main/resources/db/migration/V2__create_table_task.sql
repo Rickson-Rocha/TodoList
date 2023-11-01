@@ -1,4 +1,4 @@
-create table tarefa (
+create table task (
   task_id int auto_increment primary key,
   task_title varchar(100),
   task_startAt datetime,
