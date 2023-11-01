@@ -1,9 +1,14 @@
 package com.ricksonrocha.todolist.model.user;
 
+import com.ricksonrocha.todolist.model.task.Task;
+
+import java.util.ArrayList;
+import java.util.List;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
 import jakarta.validation.constraints.NotBlank;
 import lombok.AllArgsConstructor;
@@ -26,12 +31,13 @@ public class User {
     private Long id;
 
     @NotBlank
-    private String name;
+    private String Username;
     
     @NotBlank
-    private String password;
-
-    //private<Task> tasks = new ArrayList<Task>();
+    private String Userpassword;
+    
+    @OneToMany(mappedBy = "user")
+    private List <Task> tasks = new ArrayList<Task>();
 
 
 }
