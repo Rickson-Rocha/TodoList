@@ -8,6 +8,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -46,5 +47,15 @@ public class TaskController {
         return ResponseEntity.noContent().build();
     }
     
+    @PutMapping
+    @Transactional
+    public ResponseEntity<Task> update(@RequestBody Task task){
+        Task taskLocal = taskRepository.findById(task.getId()).get();
 
+        taskLocal.setTitle(task.getTitle());
+
+        return ResponseEntity.ok(taskLocal);
+    }
 }
+
+
