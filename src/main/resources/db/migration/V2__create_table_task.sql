@@ -1,10 +1,13 @@
-create table task (
-  task_id int auto_increment primary key,
-  task_title varchar(100),
-  task_startAt datetime,
-  task_endAt datetime,
-  task_done boolean,
-  task_priority varchar(50),
-  user_id int not null,
+
+-- Create the task table
+CREATE TABLE task (
+  id INT AUTO_INCREMENT PRIMARY KEY,
+  task_title VARCHAR(100) NOT NULL UNIQUE,
+  task_description VARCHAR(100) NOT NULL,
+  task_start DATE,
+  task_end DATE,
+  task_done TINYINT(1) NOT NULL,
+  task_priority VARCHAR(50),
+  user_id INT NOT NULL,
   FOREIGN KEY (user_id) REFERENCES user(user_id)
 );
