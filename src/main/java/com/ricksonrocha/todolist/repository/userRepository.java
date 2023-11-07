@@ -6,6 +6,6 @@ import org.springframework.stereotype.Repository;
 import com.ricksonrocha.todolist.model.user.User;
 
 @Repository
-public interface userRepository extends JpaRepository<User,Long> {
+public interface UserRepository extends JpaRepository<User,Long> {
     
 }

@@ -5,6 +5,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.web.PageableDefault;
 import org.springframework.http.ResponseEntity;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -16,46 +17,47 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.util.UriComponentsBuilder;
 import com.ricksonrocha.todolist.model.user.User;
 import com.ricksonrocha.todolist.repository.UserRepository;
+import com.ricksonrocha.todolist.service.UserService;
 
-import jakarta.transaction.Transactional;
 
 @RestController
 @RequestMapping("users")
+@Validated
 public class UserController {
-    
+    @Autowired
+    private  UserService userService;
+
     @Autowired
     private UserRepository userRepository;
-
-    @PostMapping
-    @Transactional
-    public ResponseEntity<Object> created(@RequestBody User user,
-            UriComponentsBuilder uriBuilder) {
-        User userLocal = userRepository.save(user);
-        var uri = uriBuilder.path("/users/{id}").buildAndExpand(userLocal.getId()).toUri();
-        return ResponseEntity.created(uri).build();
+    @GetMapping("/{id}")
+    public ResponseEntity<User> findById(@PathVariable Long id){
+        User user = this.userService.findById(id);
+        return ResponseEntity.ok(user);
     }
     @GetMapping
-    public ResponseEntity<Page<User>> list(@PageableDefault(size = 4, sort = {"username"}) Pageable paginacao) {
-        Page<User> users = userRepository.findAll(paginacao);
+    public ResponseEntity<Page<User>> findAll(@PageableDefault(size = 4, sort = { "nome" }) Pageable paginacao) {
+        var users = this.userRepository.findAll(paginacao);
         return ResponseEntity.ok(users);
     }
-    @PutMapping
-    @Transactional
-    public ResponseEntity<User> uptade(@RequestBody User user) {
-        User userLocal = userRepository.findById(
-                user.getId()).get();
+    @PostMapping
+    public ResponseEntity<Void> create(@Validated @RequestBody User user, UriComponentsBuilder uriBuilder){
+        User createdUser = userService.create(user);
+        var uri = uriBuilder.path("/users/{id}").buildAndExpand(createdUser.getId()).toUri();
+        return ResponseEntity.created(uri).build();
 
-        userLocal.setUsername(user.getUsername());
-
-        return ResponseEntity.ok(userLocal);
     }
 
+    @PutMapping("/{id}")
+    public ResponseEntity<Void> update(@Validated  @RequestBody  User user , @PathVariable Long id){
+         user.setId(id);
+         User createdUser = this.userService.update(user);
+         return ResponseEntity.noContent().build();
 
+    }
     @DeleteMapping("/{id}")
-    @Transactional
-    public ResponseEntity<Object> excluir(@PathVariable Long id) {
-        var user = userRepository.getReferenceById(id);
-        userRepository.delete(user);
+    public ResponseEntity<Void> delete( @PathVariable Long id){
+        this.userService.delete(id);
         return ResponseEntity.noContent().build();
+
     }
 }
